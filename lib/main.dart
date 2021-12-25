@@ -25,13 +25,12 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Image.asset('assets/imgs/retro.png'),
             Container(height: 100, color: Colors.amber),
             Container(height: 100, color: Colors.green),
             Container(height: 100, color: Colors.yellow),
             Container(height: 100, color: Colors.amber),
             Container(height: 100, color: Colors.green),
-            Container(height: 100, color: Colors.yellow),
-            Container(height: 100, color: Colors.amber),
           ],
         ),
       ),
