@@ -46,9 +46,11 @@ class AddressPage extends StatelessWidget {
             child: ListView.builder(
               itemBuilder: (context, index) {
                 logger.d('index: $index');
-                return Container(
-                  height: 100,
-                  color: Colors.accents[index],
+                return ListTile(
+                  leading: Icon(Icons.image),
+                  trailing: Icon(Icons.clear),
+                  title: Text('address $index'),
+                  subtitle: Text('subtitle $index'),
                 );
               },
               itemCount: 10,
