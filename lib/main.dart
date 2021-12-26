@@ -11,7 +11,7 @@ final _routerDelegate = BeamerDelegate(guards: [
       check: (context, location) {
         return false;
       },
-      showPage: BeamPage(child: const AuthScreen()))
+      showPage: BeamPage(child: AuthScreen()))
 ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
 
 void main() {
@@ -50,6 +50,14 @@ class MelonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        fontFamily: 'Cafe24',
+        hintColor: Colors.grey[350],
+        textTheme: TextTheme(
+            //headline3: TextStyle(fontFamily: 'Cafe24'),
+            button: TextStyle(color: Colors.white)),
+      ),
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
     );
