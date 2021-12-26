@@ -1,6 +1,18 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:melon_market/splash_screen.dart';
+import 'package:melon_market/router/locations.dart';
+import 'package:melon_market/screens/auth_screen.dart';
+import 'package:melon_market/screens/splash_screen.dart';
 import 'package:melon_market/utils/logger.dart';
+
+final _routerDelegate = BeamerDelegate(guards: [
+  BeamGuard(
+      pathBlueprints: ['/'],
+      check: (context, location) {
+        return true;
+      },
+      showPage: BeamPage(child: const AuthScreen()))
+], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
 
 void main() {
   logger.d('My first log by logger!');
@@ -25,20 +37,21 @@ class MyApp extends StatelessWidget {
       print('error occur while loading.');
       return Text('Error occur');
     } else if (snapshot.hasData) {
-      return melonApp();
+      return MelonApp();
     } else {
       return SplashScreen();
     }
   }
 }
 
-class melonApp extends StatelessWidget {
-  const melonApp({Key? key}) : super(key: key);
+class MelonApp extends StatelessWidget {
+  const MelonApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
+    return MaterialApp.router(
+      routeInformationParser: BeamerParser(),
+      routerDelegate: _routerDelegate,
     );
   }
 }
