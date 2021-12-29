@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zephyr.melon_market">
-   <application
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <application
         android:label="melon_market"
         android:icon="@mipmap/ic_launcher">
         <activity

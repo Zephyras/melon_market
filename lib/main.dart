@@ -1,17 +1,19 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:melon_market/router/locations.dart';
-import 'package:melon_market/screens/auth_screen.dart';
+import 'package:melon_market/screens/start_screen.dart';
 import 'package:melon_market/screens/splash_screen.dart';
+import 'package:melon_market/states/user_provider.dart';
 import 'package:melon_market/utils/logger.dart';
+import 'package:provider/provider.dart';
 
 final _routerDelegate = BeamerDelegate(guards: [
   BeamGuard(
       pathBlueprints: ['/'],
       check: (context, location) {
-        return false;
+        return context.watch<UserProvider>().userState;
       },
-      showPage: BeamPage(child: AuthScreen()))
+      showPage: BeamPage(child: StartScreen()))
 ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
 
 void main() {
@@ -49,17 +51,34 @@ class MelonApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        fontFamily: 'Cafe24',
-        hintColor: Colors.grey[350],
-        textTheme: TextTheme(
+    return ChangeNotifierProvider<UserProvider>(
+      create: (BuildContext context) {
+        return UserProvider();
+      },
+      child: MaterialApp.router(
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          fontFamily: 'Cafe24',
+          hintColor: Colors.grey[350],
+          textTheme: TextTheme(
             //headline3: TextStyle(fontFamily: 'Cafe24'),
-            button: TextStyle(color: Colors.white)),
+            button: TextStyle(color: Colors.white),
+          ),
+          appBarTheme: AppBarTheme(
+              backgroundColor: Colors.white,
+              elevation: 2,
+              titleTextStyle: TextStyle(fontSize: 24, color: Colors.black87),
+              actionsIconTheme: IconThemeData(color: Colors.black87)),
+          textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+            primary: Colors.white,
+            minimumSize: Size(48, 48),
+            backgroundColor: Colors.green,
+          )),
+        ),
+        routeInformationParser: BeamerParser(),
+        routerDelegate: _routerDelegate,
       ),
-      routeInformationParser: BeamerParser(),
-      routerDelegate: _routerDelegate,
     );
   }
 }
