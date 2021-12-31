@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "894398482652",
+    "project_id": "melon-market",
+    "storage_bucket": "melon-market.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894398482652:android:5d8bb350bf8f27beef0c19",
+        "android_client_info": {
+          "package_name": "com.zephyr.melon_market"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894398482652-5pgkoc7mccnbcnib9mo3t5e0fs3iav3u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zephyr.melon_market",
+            "certificate_hash": "ee1dbe59116255a1ecfcaa7dc2a91c1ef98eff94"
+          }
+        },
+        {
+          "client_id": "894398482652-ql5uooef6qh244qlnimn2pdvv4fabtcj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHEHWuHWMfoLHsRsrv1Z99jk0auOrWZE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894398482652-ql5uooef6qh244qlnimn2pdvv4fabtcj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>894398482652-ind37puse34r0ntehcbjj2uc30jao12r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.894398482652-ind37puse34r0ntehcbjj2uc30jao12r</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>894398482652-5pgkoc7mccnbcnib9mo3t5e0fs3iav3u.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB_bCJIb7vgqnbDObQEWXOGZLnuov6a-u8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>894398482652</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.zephyr.melonMarket</string>
+	<key>PROJECT_ID</key>
+	<string>melon-market</string>
+	<key>STORAGE_BUCKET</key>
+	<string>melon-market.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:894398482652:ios:56ec8e5b78fce194ef0c19</string>
+</dict>
+</plist>

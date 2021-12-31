@@ -5,12 +5,11 @@ import 'package:melon_market/utils/logger.dart';
 import 'package:provider/provider.dart';
 
 class IntroPage extends StatelessWidget {
-  PageController controller;
-  IntroPage(this.controller, {Key? key}) : super(key: key);
+  IntroPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    logger.d('current user state: ${context.read<UserProvider>().userState}');
+    //logger.d('current user state: ${context.read<UserProvider>().userState}');
     return LayoutBuilder(
       builder: (context, constraints) {
         Size size = MediaQuery.of(context).size;
@@ -69,7 +68,7 @@ class IntroPage extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () async {
-                        controller.animateToPage(1,
+                        context.read<PageController>().animateToPage(1,
                             duration: Duration(milliseconds: 500),
                             curve: Curves.ease);
                         logger.d('on text button clicked!!!');

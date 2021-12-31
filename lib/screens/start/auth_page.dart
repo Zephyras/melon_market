@@ -1,9 +1,12 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:melon_market/constants/common_size.dart';
 import 'package:melon_market/states/user_provider.dart';
+import 'package:melon_market/utils/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
   static const String prePhoneNum = '010';
@@ -30,6 +33,8 @@ class _AuthPageState extends State<AuthPage> {
 
   VerificationStatus _verificationStatus = VerificationStatus.none;
 
+  String? _verificationId;
+  int? _forceResendingToken;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -85,18 +90,78 @@ class _AuthPageState extends State<AuthPage> {
                     height: common_sm_padding,
                   ),
                   TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        if (_verificationStatus ==
+                            VerificationStatus.codesending) return;
+
                         if (_formkey.currentState != null) {
                           bool passed = _formkey.currentState!.validate();
                           print(passed);
                           if (passed) {
+                            String phoneNum = _phoneEditingController.text;
+                            phoneNum = phoneNum.replaceAll(" ", "");
+                            phoneNum = phoneNum.replaceFirst("0", "");
+                            logger.d('phoneNum: $phoneNum');
+
+                            FirebaseAuth auth = FirebaseAuth.instance;
+
+                            setState(() {
+                              _verificationStatus =
+                                  VerificationStatus.codesending;
+                            });
+
+                            await auth.verifyPhoneNumber(
+                              phoneNumber: '+82$phoneNum',
+                              forceResendingToken: _forceResendingToken,
+                              verificationCompleted:
+                                  (PhoneAuthCredential credential) async {
+                                logger.d('verificationComplate: $credential');
+                                await auth.signInWithCredential(credential);
+                              },
+                              codeAutoRetrievalTimeout:
+                                  (String verificationId) {},
+                              codeSent: (String verificationId,
+                                  int? forceResendingToken) async {
+                                setState(() {
+                                  _verificationStatus =
+                                      VerificationStatus.codeSent;
+                                });
+                                _verificationId = verificationId;
+                                _forceResendingToken = forceResendingToken;
+
+                                // // Update the UI - wait for the user to enter the SMS code
+                                // String smsCode = '555555';
+                                //
+                                // // Create a PhoneAuthCredential with the code
+                                // PhoneAuthCredential credential =
+                                //     PhoneAuthProvider.credential(
+                                //         verificationId: verificationId,
+                                //         smsCode: smsCode);
+                                //
+                                // // Sign the user in (or link) with the credential
+                                // await auth.signInWithCredential(credential);
+                              },
+                              verificationFailed:
+                                  (FirebaseAuthException error) {
+                                logger.e(error.message);
+                                _verificationStatus = VerificationStatus.none;
+                              },
+                            );
+
                             setState(() {
                               _verificationStatus = VerificationStatus.codeSent;
                             });
                           }
                         }
                       },
-                      child: Text('인증문자 발송')),
+                      child: (_verificationStatus ==
+                              VerificationStatus.codesending)
+                          ? SizedBox(
+                              width: 26,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ))
+                          : Text('인증문자 발송')),
                   SizedBox(
                     height: common_padding,
                   ),
@@ -144,6 +209,7 @@ class _AuthPageState extends State<AuthPage> {
     switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codesending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -155,6 +221,7 @@ class _AuthPageState extends State<AuthPage> {
     switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codesending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -167,14 +234,40 @@ class _AuthPageState extends State<AuthPage> {
       _verificationStatus = VerificationStatus.verifying;
     });
 
-    await Future.delayed(Duration(seconds: 3));
+    try {
+      // Create a PhoneAuthCredential with the code
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId!,
+          smsCode: _codeEditingController.text);
 
+      // Sign the user in (or link) with the credential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      //await Future.delayed(Duration(seconds: 3));
+      logger.e('verification failed!!');
+      SnackBar snackbar = SnackBar(content: Text('입력하신 코드가 틀립니다'));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
+
+    //await Future.delayed(Duration(seconds: 3));
     setState(() {
       _verificationStatus = VerificationStatus.verificationDone;
     });
 
-    context.read<UserProvider>().setUserAuth(true);
+    // context.read<UserProvider>().setUserAuth(true);
+  }
+
+  _getAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String address = prefs.getString('address') ?? "";
+    logger.d('Address from Shared pref: $address');
   }
 }
 
-enum VerificationStatus { none, codeSent, verifying, verificationDone }
+enum VerificationStatus {
+  none,
+  codesending,
+  codeSent,
+  verifying,
+  verificationDone
+}
