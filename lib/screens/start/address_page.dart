@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:melon_market/constants/common_size.dart';
+import 'package:melon_market/constants/shared_pref_keys.dart';
 import 'package:melon_market/model/address_model.dart';
 import 'package:melon_market/model/nearbyaddress_model.dart';
 import 'package:melon_market/screens/start/adress_service.dart';
@@ -131,8 +132,15 @@ class _AddressPageState extends State<AddressPage> {
                   return ListTile(
                     onTap: () {
                       _saveAddressAndGoToNextPage(
-                          _addressModel!.result!.items![index].address!.road ??
-                              "");
+                        _addressModel!.result!.items![index].address!.road ??
+                            "",
+                        num.parse(
+                            _addressModel!.result!.items![index].point!.y ??
+                                '0'),
+                        num.parse(
+                            _addressModel!.result!.items![index].point!.x ??
+                                '0'),
+                      );
                     },
                     leading: Icon(Icons.image),
                     trailing: Icon(Icons.clear),
@@ -158,13 +166,24 @@ class _AddressPageState extends State<AddressPage> {
                 padding: EdgeInsets.symmetric(vertical: common_padding),
                 itemBuilder: (context, index) {
                   if (_nearbyadressModelList[index].result == null ||
-                      _nearbyadressModelList[index].result!.isEmpty)
+                      _nearbyadressModelList[index].result!.isEmpty ||
+                      _nearbyadressModelList[index].input == null ||
+                      _nearbyadressModelList[index].input!.point!.x == null ||
+                      _nearbyadressModelList[index].input!.point!.y == null) {
                     return Container();
+                  }
                   logger.d('index: $index');
                   return ListTile(
                     onTap: () {
                       _saveAddressAndGoToNextPage(
-                          _nearbyadressModelList[index].result![0].text ?? "");
+                        _nearbyadressModelList[index].result![0].text ?? "",
+                        num.parse(
+                            _nearbyadressModelList[index].input!.point!.y ??
+                                '0'),
+                        num.parse(
+                            _nearbyadressModelList[index].input!.point!.x ??
+                                '0'),
+                      );
                     },
                     leading: Icon(Icons.image),
                     trailing: Icon(Icons.clear),
@@ -182,14 +201,16 @@ class _AddressPageState extends State<AddressPage> {
     );
   }
 
-  _saveAddressAndGoToNextPage(String address) async {
-    await _saveAddressOnSharedPreference(address);
+  _saveAddressAndGoToNextPage(String address, num lat, num lon) async {
+    await _saveAddressOnSharedPreference(address, lat, lon);
     context.read<PageController>().animateToPage(2,
         duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
-  _saveAddressOnSharedPreference(String address) async {
+  _saveAddressOnSharedPreference(String address, num lat, num lon) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('address', address);
+    await prefs.setString(SHARED_ADDRESS, address);
+    await prefs.setDouble(SHARED_LAT, lat.toDouble());
+    await prefs.setDouble(SHARED_LON, lon.toDouble());
   }
 }
